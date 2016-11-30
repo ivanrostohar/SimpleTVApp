@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String API_KEY = BuildConfig.MOVIES_API_KEY;
-        Log.v("API_KEY", API_KEY);
+        String MOVIES_API_KEY = BuildConfig.MOVIES_API_KEY;
+        Log.v("API_KEY", MOVIES_API_KEY);
     }
 }
