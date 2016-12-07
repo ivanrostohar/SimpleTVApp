@@ -6,6 +6,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -14,18 +15,17 @@ import retrofit2.http.Query;
 
 public interface MoviesAPI {
 
-    //https://api.themoviedb.org/3/movie/now_playing?api_key=7dd608256b9c1a213469b6675f0d6b6f
-
-//    @GET("movie/now_playing?api_key=7dd608256b9c1a213469b6675f0d6b6f")
-//    Call<MoviesResponse> getPopularMovies();
+    //https://api.themoviedb.org/3/movie/now_playing?api_key=7dd608256b9c1a213469b6675f0d6b6f&page=2
 
     @GET("movie/now_playing")
-    Call<MoviesResponse> getPopularMovies(@Query("api_key") String apiKey);
+    Call<MoviesResponse> getNowPlayingMovies(@Query("api_key") String apiKey);
+
 
 
     public class GetClient {
 
         public static String BASE_URL = "https://api.themoviedb.org/3/";
+
         private static MoviesAPI service;
 
         public static MoviesAPI getInstance() {

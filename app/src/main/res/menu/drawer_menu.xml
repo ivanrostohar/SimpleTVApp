@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/movies_fragment"
+            android:icon="@drawable/ic_local_movies_black_24dp"
+            android:title="Movies" />
+        <item
+            android:id="@+id/series_fragment"
+            android:icon="@drawable/ic_local_movies_black_24dp"
+            android:title="Series" />
+
+    </group>
+
+    <item android:title="Sub items">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/settings_fragment"
+                    android:icon="@drawable/ic_local_movies_black_24dp"
+                    android:title="Settings" />
+                <item
+                    android:id="@+id/about_us_fragment"
+                    android:icon="@drawable/ic_local_movies_black_24dp"
+                    android:title="About us" />
+            </group>
+        </menu>
+    </item>
+
+</menu>

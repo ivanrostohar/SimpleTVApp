@@ -44,13 +44,20 @@ public class Result {
     private double popularity;
     @SerializedName("vote_count")
     @Expose
-    private int voteCount;
+    private double voteCount;
     @SerializedName("video")
     @Expose
     private boolean video;
     @SerializedName("vote_average")
     @Expose
     private double voteAverage;
+
+    public Result(String posterPath, String originalTitle, String releaseDate, double voteAverage) {
+        this.posterPath = posterPath;
+        this.originalTitle = originalTitle;
+        this.releaseDate = releaseDate;
+        this.voteAverage = voteAverage;
+    }
 
     /**
      * 
@@ -255,7 +262,7 @@ public class Result {
      * @return
      *     The voteCount
      */
-    public int getVoteCount() {
+    public double getVoteCount() {
         return voteCount;
     }
 
@@ -264,7 +271,7 @@ public class Result {
      * @param voteCount
      *     The vote_count
      */
-    public void setVoteCount(int voteCount) {
+    public void setVoteCount(double voteCount) {
         this.voteCount = voteCount;
     }
 
