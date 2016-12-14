@@ -2,22 +2,18 @@ package com.example.ivan.simpletvapp.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.ivan.simpletvapp.R;
-import com.example.ivan.simpletvapp.models.Result;
+import com.example.ivan.simpletvapp.models.MoviesModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -29,10 +25,10 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder>{
     private Context context;
-    private List<Result> moviesList;
+    private List<MoviesModel> moviesList;
 
 
-    public MoviesAdapter(Context context, List<Result> moviesList) {
+    public MoviesAdapter(Context context, List<MoviesModel> moviesList) {
         this.context = context;
         this.moviesList = moviesList;
     }
@@ -61,11 +57,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
                 builder.generate(new Palette.PaletteAsyncListener() {
                                      @Override
                                      public void onGenerated(Palette palette) {
-                                         Palette.Swatch vibrant = palette.getLightMutedSwatch();
+                                         Palette.Swatch vibrant = palette.getLightVibrantSwatch();
                                          if (vibrant != null) {
                                              holder.constraintLayout.setBackgroundColor(vibrant.getRgb());
                                              holder.txt_movie_title.setTextColor(vibrant.getTitleTextColor());
-                                             holder.txt_release_date.setTextColor(vibrant.getBodyTextColor());
+                                             holder.txt_release_date.setTextColor(vibrant.getTitleTextColor());
                                              holder.txt_rating.setTextColor(vibrant.getTitleTextColor());
                                          }
                                      }

@@ -1,11 +1,8 @@
 package com.example.ivan.simpletvapp.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,32 +10,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.ivan.simpletvapp.BuildConfig;
 import com.example.ivan.simpletvapp.R;
 import com.example.ivan.simpletvapp.adapters.MoviesAdapter;
-import com.example.ivan.simpletvapp.models.MoviesResponse;
-import com.example.ivan.simpletvapp.models.Result;
-import com.example.ivan.simpletvapp.services.MoviesAPI;
+import com.example.ivan.simpletvapp.models.MoviesModel;
+import com.example.ivan.simpletvapp.other.AppController;
+import com.example.ivan.simpletvapp.other.EndlessRecyclerOnScrollListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static com.example.ivan.simpletvapp.BuildConfig.MOVIES_API_KEY;
 
 public class MoviesFragment extends Fragment {
 
     private static final String MOVIES_API_KEY = BuildConfig.MOVIES_API_KEY;
+    private static final String url = "https://api.themoviedb.org/3/movie/top_rated?api_key=";
     private RecyclerView recyclerView;
-    private GridLayoutManager gridLayoutManager;
     private MoviesAdapter moviesAdapter;
-    private List<Result> moviesResult;
-    //  private Context context = getActivity();
-    LinearLayoutManager llm;
-
+    private LinearLayoutManager llm;
+    private int currentPage = 1;
+    private int totalPages;
+    private long requestStartTime,requestEndTime, requestTotalTime;
+    private MoviesModel moviesObject;
+    private ArrayList<MoviesModel> moviesModel = new ArrayList<>();
+    boolean loading = true;
 
 
     public MoviesFragment() {
@@ -63,51 +65,107 @@ public class MoviesFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movies, container, false);
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
-      //  gridLayoutManager = new GridLayoutManager(getActivity(), 1);
-      //  recyclerView.setLayoutManager(gridLayoutManager);
-        llm = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL, false);
+        llm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(llm);
 
-        downloadPopularMovies();
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
+            @Override
+            public void onLoadMore(int current_page) {
+                downloadMovies(url, current_page);
+                Log.v("TIME", String.valueOf(requestTotalTime));
+            }
+        });
 
-        Log.v("moviesRESULT", moviesResult.toString());
+
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+
+
+
+//                if((recyclerView.getAdapter().getItemCount() == moviesModel.size()-1) && loading){
+//                    new Thread(downloadMoviesThread).start();
+//                    loading = false;
+//                }
+
+//                if(!recyclerView.canScrollVertically(-1)) {
+//
+//                    new Thread(downloadMoviesThread).start();
+//
+//                }
+//
+//            }
+//        });
+
+        downloadMovies(url, currentPage);
+//        currentPage++;
 
         return view;
     }
 
-    public void downloadPopularMovies() {
-
-        moviesResult = new ArrayList<>();
 
 
-            MoviesAPI.GetClient.getInstance().getNowPlayingMovies(MOVIES_API_KEY).enqueue(new Callback<MoviesResponse>() {
-                @Override
-                public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                    int odgovor = response.body().getTotalPages();
-                    Log.v("ODGOVOR", String.valueOf(odgovor));
-                    Log.v("NAZIV", String.valueOf(response.body().getResults().get(0).getOriginalTitle()));
+    public Runnable downloadMoviesThread = new Runnable() {
+        @Override
+        public void run() {
 
-                    for (int i = 0; i < response.body().getResults().size(); i++) {
-                        Result rezultat = new Result(
-                                response.body().getResults().get(i).getPosterPath(),
-                                response.body().getResults().get(i).getOriginalTitle(),
-                                response.body().getResults().get(i).getReleaseDate(),
-                                response.body().getResults().get(i).getVoteAverage());
-                        moviesResult.add(rezultat);
-                    }
-                    //   Log.v("moviesRESULT2", moviesResult.toString());
-                    moviesAdapter = new MoviesAdapter(getActivity(), moviesResult);
-                    recyclerView.setAdapter(moviesAdapter);
-                    moviesAdapter.notifyDataSetChanged();
+            while(currentPage<totalPages){
+                try {
+                    Thread.sleep(1000);
+                    downloadMovies(url, currentPage);
+                    currentPage++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                @Override
-                public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                    //    Log.v("PROMAŠAJ", t.getLocalizedMessage());
-                }
-            });
         }
+    };
+
+
+    public void downloadMovies(String url, int currentPage){
+        requestStartTime = System.currentTimeMillis();
+        String url_final = url + MOVIES_API_KEY + "&page=" + currentPage;
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url_final, null, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    totalPages = response.getInt("total_pages");
+                    JSONArray results = response.getJSONArray("results");
+                    for(int i=0; i<results.length(); i++){
+                        JSONObject resultsObject = results.getJSONObject(i);
+                        moviesObject = new MoviesModel(
+                                resultsObject.getString("poster_path"),
+                                resultsObject.getString("release_date"),
+                                resultsObject.getString("original_title"),
+                                resultsObject.getDouble("vote_average")
+                        );
+                        moviesModel.add(moviesObject);
+                        moviesAdapter = new MoviesAdapter(getActivity(),moviesModel);
+                        recyclerView.setAdapter(moviesAdapter);
+                        moviesAdapter.notifyDataSetChanged();
+                    }
+                    int page2 = response.getInt("page");
+                    Log.v("DATA", String.valueOf(page2));
+                    requestEndTime = System.currentTimeMillis() - requestStartTime;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.getLocalizedMessage();
+            }
+        });
+        requestTotalTime+=requestEndTime;
+
+        AppController.getInstance().addToRequestQueue(objectRequest);
     }
+
+}

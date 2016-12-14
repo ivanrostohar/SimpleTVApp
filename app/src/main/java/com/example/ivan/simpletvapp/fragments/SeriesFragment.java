@@ -3,64 +3,158 @@ package com.example.ivan.simpletvapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.ivan.simpletvapp.BuildConfig;
 import com.example.ivan.simpletvapp.R;
+import com.example.ivan.simpletvapp.adapters.SeriesAdapter;
+import com.example.ivan.simpletvapp.models.SeriesModel;
+import com.example.ivan.simpletvapp.other.AppController;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SeriesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SeriesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+import java.util.ArrayList;
+
+public class SeriesFragment extends Fragment{
+    private static final String MOVIES_API_KEY = BuildConfig.MOVIES_API_KEY;
+    public int currentPage = 1;
+    public int totalPages;
+    String url = "https://api.themoviedb.org/3/tv/on_the_air?api_key=";
+    public ArrayList<SeriesModel> seriesModel = new ArrayList<>();
+    public SeriesModel seriesObject;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private LinearLayoutManager llm;
+    private SeriesAdapter seriesAdapter;
+    private long requestStartTime,requestEndTime, requestTotalTime;
 
 
     public SeriesFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SeriesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SeriesFragment newInstance(String param1, String param2) {
+    public static SeriesFragment newInstance() {
         SeriesFragment fragment = new SeriesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_series, container, false);
+        View view = inflater.inflate(R.layout.series_movies_fragment, container, false);
+
+        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view_series);
+       // swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView.setHasFixedSize(true);
+        llm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(llm);
+
+        SeriesFirstDownload(url, currentPage);
+
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if(!recyclerView.canScrollVertically(-1)) {
+
+                    new Thread(downloadSeriesThread).start();
+
+                }
+                Log.v("TIME", String.valueOf(requestTotalTime));
+            }
+        });
+
+
+
+        return view;
     }
 
+    public Runnable downloadSeriesThread = new Runnable() {
+        @Override
+        public void run() {
+
+            while(currentPage<totalPages){
+                try {
+                    Thread.sleep(1000);
+                    SeriesFirstDownload(url, currentPage);
+                    currentPage++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    };
+
+
+
+
+
+
+
+    public void SeriesFirstDownload(String url, int currentPage){
+
+        requestStartTime = System.currentTimeMillis();
+            String url_final = url + MOVIES_API_KEY + "&page=" + currentPage;
+            JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url_final, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        totalPages = response.getInt("total_pages");
+                        JSONArray results = response.getJSONArray("results");
+                        for(int i=0; i<results.length(); i++){
+                            JSONObject resultsObject = results.getJSONObject(i);
+                            seriesObject = new SeriesModel(
+                                    resultsObject.getDouble("vote_average"),
+                                    resultsObject.getString("poster_path"),
+                                    resultsObject.getString("first_air_date"),
+                                    resultsObject.getString("name")
+                            );
+                            seriesModel.add(seriesObject);
+                            seriesAdapter = new SeriesAdapter(getActivity(),seriesModel);
+                            recyclerView.setAdapter(seriesAdapter);
+                            seriesAdapter.notifyDataSetChanged();
+                        }
+                        int page2 = response.getInt("page");
+                        Log.v("DATA", String.valueOf(page2));
+                        requestEndTime = System.currentTimeMillis() - requestStartTime;
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.getLocalizedMessage();
+                }
+            });
+        requestTotalTime+=requestEndTime;
+
+            AppController.getInstance().addToRequestQueue(objectRequest);
+    }
+
+
 }
+
