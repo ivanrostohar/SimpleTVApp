@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.ivan.simpletvapp.BuildConfig;
 import com.example.ivan.simpletvapp.R;
@@ -21,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String MOVIES_API_KEY = BuildConfig.MOVIES_API_KEY;
 
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
+    public Toolbar toolbar;
+    public DrawerLayout drawerLayout;
 
     //we need ActionBarDrawerToggle for hamburger icon
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -89,6 +90,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         actionBarDrawerToggle.syncState();
+    }
+
+    public void setToolbar(Toolbar toolbar, String title){
+        AppCompatActivity actionBar = this;
+        actionBar.setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout)actionBar.findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawer.addDrawerListener(toogle);
+        toogle.setDrawerIndicatorEnabled(true);
+        toogle.syncState();
+        if(toolbar != null)
+            toolbar.setTitle(title);
+
     }
 
 

@@ -34,7 +34,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.series_card_layout, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movies_series_row_layout, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -42,7 +42,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, int position) {
         String series_poster_path = "https://image.tmdb.org/t/p/w500" + seriesModel.get(position).getPosterPath();
 
-        holder.txt_series_title.setText(seriesModel.get(position).getName());
+        holder.txt_series_name.setText(seriesModel.get(position).getName());
         holder.txt_series_date.setText(seriesModel.get(position).getAirDate());
         holder.txt_series_average.setText(String.valueOf(seriesModel.get(position).getVoteAverage()));
         Picasso.with(context).load(series_poster_path).into(holder.img_series_poster, new Callback() {
@@ -56,7 +56,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
                         Palette.Swatch vibrant = palette.getLightVibrantSwatch();
                         if (vibrant != null) {
                             holder.cl_series.setBackgroundColor(vibrant.getRgb());
-                            holder.txt_series_title.setTextColor(vibrant.getTitleTextColor());
+                            holder.txt_series_name.setTextColor(vibrant.getTitleTextColor());
                             holder.txt_series_date.setTextColor(vibrant.getTitleTextColor());
                             holder.txt_series_average.setTextColor(vibrant.getTitleTextColor());
                         }
@@ -83,15 +83,15 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ConstraintLayout cl_series;
         public ImageView img_series_poster;
-        public TextView txt_series_title, txt_series_date, txt_series_average;
+        public TextView txt_series_name, txt_series_date, txt_series_average;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            cl_series = (ConstraintLayout)itemView.findViewById(R.id.cl_series);
-            img_series_poster = (ImageView)itemView.findViewById(R.id.img_series_poster);
-            txt_series_title = (TextView)itemView.findViewById(R.id.txt_series_name);
-            txt_series_average = (TextView)itemView.findViewById(R.id.txt_series_average);
-            txt_series_date = (TextView)itemView.findViewById(R.id.txt_series_date);
+            cl_series = (ConstraintLayout)itemView.findViewById(R.id.cl_sm);
+            img_series_poster = (ImageView)itemView.findViewById(R.id.img_sm_poster);
+            txt_series_name = (TextView)itemView.findViewById(R.id.txt_sm_name);
+            txt_series_average = (TextView)itemView.findViewById(R.id.txt_sm_average);
+            txt_series_date = (TextView)itemView.findViewById(R.id.txt_sm_date);
         }
     }
 }

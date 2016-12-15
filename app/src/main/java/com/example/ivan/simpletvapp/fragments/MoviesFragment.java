@@ -2,19 +2,30 @@ package com.example.ivan.simpletvapp.fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.ivan.simpletvapp.BuildConfig;
 import com.example.ivan.simpletvapp.R;
+import com.example.ivan.simpletvapp.activities.MainActivity;
 import com.example.ivan.simpletvapp.adapters.MoviesAdapter;
 import com.example.ivan.simpletvapp.models.MoviesModel;
 import com.example.ivan.simpletvapp.other.AppController;
@@ -40,7 +51,7 @@ public class MoviesFragment extends Fragment {
     private long requestStartTime,requestEndTime, requestTotalTime;
     private MoviesModel moviesObject;
     private ArrayList<MoviesModel> moviesModel = new ArrayList<>();
-    boolean loading = true;
+    private Toolbar toolbarMovies;
 
 
     public MoviesFragment() {
@@ -55,6 +66,7 @@ public class MoviesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
     }
 
@@ -63,7 +75,11 @@ public class MoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_movies, container, false);
+        View view = inflater.inflate(R.layout.movies_series_fragment, container, false);
+
+        toolbarMovies = (Toolbar)getActivity().findViewById(R.id.toolbar);
+
+        ((MainActivity)getActivity()).setToolbar(toolbarMovies, "Movies");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -168,4 +184,27 @@ public class MoviesFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(objectRequest);
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.movies_menu, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.latest_movies:
+                Toast.makeText(getActivity(), "Latest movies", Toast.LENGTH_SHORT).show();
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

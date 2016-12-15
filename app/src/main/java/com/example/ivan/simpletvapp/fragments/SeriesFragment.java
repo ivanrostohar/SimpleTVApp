@@ -3,13 +3,20 @@ package com.example.ivan.simpletvapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -17,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.ivan.simpletvapp.BuildConfig;
 import com.example.ivan.simpletvapp.R;
+import com.example.ivan.simpletvapp.activities.MainActivity;
 import com.example.ivan.simpletvapp.adapters.SeriesAdapter;
 import com.example.ivan.simpletvapp.models.SeriesModel;
 import com.example.ivan.simpletvapp.other.AppController;
@@ -35,10 +43,10 @@ public class SeriesFragment extends Fragment{
     public ArrayList<SeriesModel> seriesModel = new ArrayList<>();
     public SeriesModel seriesObject;
     private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayoutManager llm;
     private SeriesAdapter seriesAdapter;
     private long requestStartTime,requestEndTime, requestTotalTime;
+    private Toolbar seriesToolbar;
 
 
     public SeriesFragment() {
@@ -53,37 +61,41 @@ public class SeriesFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.series_movies_fragment, container, false);
+        View view = inflater.inflate(R.layout.movies_series_fragment, container, false);
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view_series);
-       // swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh_layout);
+        seriesToolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
+
+        ((MainActivity)getActivity()).setToolbar(seriesToolbar, "Series");
+
+        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         llm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(llm);
 
+
         SeriesFirstDownload(url, currentPage);
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                if(!recyclerView.canScrollVertically(-1)) {
-
-                    new Thread(downloadSeriesThread).start();
-
-                }
-                Log.v("TIME", String.valueOf(requestTotalTime));
-            }
-        });
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//
+//                if(!recyclerView.canScrollVertically(-1)) {
+//
+//                    new Thread(downloadSeriesThread).start();
+//
+//                }
+//                Log.v("TIME", String.valueOf(requestTotalTime));
+//            }
+//        });
 
 
 
@@ -103,15 +115,8 @@ public class SeriesFragment extends Fragment{
                     e.printStackTrace();
                 }
             }
-
         }
     };
-
-
-
-
-
-
 
     public void SeriesFirstDownload(String url, int currentPage){
 
@@ -156,5 +161,21 @@ public class SeriesFragment extends Fragment{
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.series_menu, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.popular_shows:
+                Toast.makeText(getActivity(), "Popular shows", Toast.LENGTH_SHORT).show();break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
 
