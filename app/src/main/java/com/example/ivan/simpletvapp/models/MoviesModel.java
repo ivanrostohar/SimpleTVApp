@@ -1,21 +1,28 @@
 package com.example.ivan.simpletvapp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Ivan on 13.12.2016..
  */
 
-public class MoviesModel {
+public class MoviesModel implements Parcelable {
     private int page, totalResults, totalPages, moviesId, voteCount;
     private String posterPath, overview, releaseDate, originalTitle, originalLanguage, title;
     private double popularity, voteAverage;
     private boolean adoult, video;
 
-    public MoviesModel(String posterPath, String releaseDate, String originalTitle, double voteAverage) {
+    public MoviesModel(String posterPath, String releaseDate, String originalTitle, double voteAverage, int moviesId) {
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
         this.originalTitle = originalTitle;
         this.voteAverage = voteAverage;
+        this.moviesId = moviesId;
     }
+
+
+
 
     public int getPage() {
         return page;
@@ -136,4 +143,58 @@ public class MoviesModel {
     public void setVideo(boolean video) {
         this.video = video;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.page);
+        dest.writeInt(this.totalResults);
+        dest.writeInt(this.totalPages);
+        dest.writeInt(this.moviesId);
+        dest.writeInt(this.voteCount);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.overview);
+        dest.writeString(this.releaseDate);
+        dest.writeString(this.originalTitle);
+        dest.writeString(this.originalLanguage);
+        dest.writeString(this.title);
+        dest.writeDouble(this.popularity);
+        dest.writeDouble(this.voteAverage);
+        dest.writeByte(this.adoult ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.video ? (byte) 1 : (byte) 0);
+    }
+
+    protected MoviesModel(Parcel in) {
+        this.page = in.readInt();
+        this.totalResults = in.readInt();
+        this.totalPages = in.readInt();
+        this.moviesId = in.readInt();
+        this.voteCount = in.readInt();
+        this.posterPath = in.readString();
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.originalTitle = in.readString();
+        this.originalLanguage = in.readString();
+        this.title = in.readString();
+        this.popularity = in.readDouble();
+        this.voteAverage = in.readDouble();
+        this.adoult = in.readByte() != 0;
+        this.video = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<MoviesModel> CREATOR = new Parcelable.Creator<MoviesModel>() {
+        @Override
+        public MoviesModel createFromParcel(Parcel source) {
+            return new MoviesModel(source);
+        }
+
+        @Override
+        public MoviesModel[] newArray(int size) {
+            return new MoviesModel[size];
+        }
+    };
 }

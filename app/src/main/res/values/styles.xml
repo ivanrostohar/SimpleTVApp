@@ -7,4 +7,14 @@
         <item name="colorAccent">#fff679</item>
     </style>
 
+    <style name="DetailsTheme" parent = "Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">#211438</item>
+        <item name="colorPrimaryDark">#3f3656</item>
+        <item name="colorAccent">#f1c05f</item>
+    </style>
+    
+    <style name="TransparentText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#00666666</item>
+    </style>
+
 </resources>

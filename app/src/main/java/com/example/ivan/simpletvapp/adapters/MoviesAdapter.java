@@ -1,11 +1,16 @@
 package com.example.ivan.simpletvapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ivan.simpletvapp.R;
+import com.example.ivan.simpletvapp.activities.MSActivity;
+import com.example.ivan.simpletvapp.activities.MainActivity;
+import com.example.ivan.simpletvapp.fragments.MoviesSeriesOverview;
 import com.example.ivan.simpletvapp.models.MoviesModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,10 +34,10 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder>{
     private Context context;
-    private List<MoviesModel> moviesList;
+    private ArrayList<MoviesModel> moviesList;
 
 
-    public MoviesAdapter(Context context, List<MoviesModel> moviesList) {
+    public MoviesAdapter(Context context, ArrayList<MoviesModel> moviesList) {
         this.context = context;
         this.moviesList = moviesList;
     }
@@ -36,7 +45,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movies_series_row_layout, parent, false);
-        return new ViewHolder(itemView);
+        return new ViewHolder(itemView, context, moviesList);
     }
 
     @Override
@@ -81,19 +90,58 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ConstraintLayout constraintLayout;
         public TextView txt_movie_name, txt_release_date, txt_average;
         public ImageView img_poster;
 
-        public ViewHolder(View itemView) {
+        ArrayList<MoviesModel> moviesLista = new ArrayList<>();
+        Context context;
+        MoviesSeriesOverview msFragmentDetails;
+
+        public ViewHolder(View itemView, Context context, ArrayList<MoviesModel> moviesLista) {
             super(itemView);
+            this.moviesLista = moviesLista;
+            this.context = context;
+            itemView.setOnClickListener(this);
             txt_movie_name = (TextView)itemView.findViewById(R.id.txt_sm_name);
             txt_release_date = (TextView)itemView.findViewById(R.id.txt_sm_date);
             txt_average = (TextView)itemView.findViewById(R.id.txt_sm_average);
             img_poster = (ImageView)itemView.findViewById(R.id.img_sm_poster);
             constraintLayout = (ConstraintLayout)itemView.findViewById(R.id.cl_sm);
         }
+
+        @Override
+        public void onClick(View view) {
+
+//            MoviesModel moviesObject = this.moviesLista.get(getAdapterPosition());
+//            fragmentJump(moviesObject);
+
+            int position = getAdapterPosition();
+            MoviesModel moviesObject = this.moviesLista.get(position);
+
+            Intent intent = new Intent(this.context, MSActivity.class);
+            intent.putExtra("movies_object", moviesObject);
+            Log.v("ID", String.valueOf(moviesObject.getMoviesId()));
+            this.context.startActivity(intent);
+
+        }
+
+//        private void fragmentJump(MoviesModel moviesObject){
+//            msFragmentDetails = new MoviesSeriesOverview();
+//            int position = getAdapterPosition();
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable("movies_object", moviesObject);
+//            msFragmentDetails.setArguments(bundle);
+//            if(context == null){
+//                return;
+//            }
+//            if(context instanceof MainActivity){
+//                MainActivity mActivity = (MainActivity) context;
+//                mActivity.switchFragment(R.id.main_container, msFragmentDetails);
+//            }
+//        }
     }
+
 }

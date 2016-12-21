@@ -1,6 +1,7 @@
 package com.example.ivan.simpletvapp.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -30,6 +31,7 @@ import com.example.ivan.simpletvapp.adapters.MoviesAdapter;
 import com.example.ivan.simpletvapp.models.MoviesModel;
 import com.example.ivan.simpletvapp.other.AppController;
 import com.example.ivan.simpletvapp.other.EndlessRecyclerOnScrollListener;
+import com.example.ivan.simpletvapp.other.UrlConstants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -158,8 +160,10 @@ public class MoviesFragment extends Fragment {
                                 resultsObject.getString("poster_path"),
                                 resultsObject.getString("release_date"),
                                 resultsObject.getString("original_title"),
-                                resultsObject.getDouble("vote_average")
+                                resultsObject.getDouble("vote_average"),
+                                resultsObject.getInt("id")
                         );
+                        Log.v("ID", String.valueOf(moviesObject.getMoviesId()));
                         moviesModel.add(moviesObject);
                         moviesAdapter = new MoviesAdapter(getActivity(),moviesModel);
                         recyclerView.setAdapter(moviesAdapter);
@@ -181,8 +185,10 @@ public class MoviesFragment extends Fragment {
         });
         requestTotalTime+=requestEndTime;
 
+
         AppController.getInstance().addToRequestQueue(objectRequest);
     }
+
 
 
     @Override
@@ -196,10 +202,26 @@ public class MoviesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
-            case R.id.latest_movies:
-                Toast.makeText(getActivity(), "Latest movies", Toast.LENGTH_SHORT).show();
+            case R.id.top_rated_movies:
+                Toast.makeText(getActivity(), "Top rated movies", Toast.LENGTH_SHORT).show();
+                moviesModel.clear();
+                downloadMovies(UrlConstants.TOP_RATED_MOVIES, currentPage);
                 break;
-
+            case R.id.now_playing_movies:
+                Toast.makeText(getActivity(), "Now playing movies", Toast.LENGTH_SHORT).show();
+                moviesModel.clear();
+                downloadMovies(UrlConstants.NOW_PLAYING_MOVIES, currentPage);
+                break;
+            case R.id.upcoming_movies:
+                Toast.makeText(getActivity(), "Upcoming movies", Toast.LENGTH_SHORT).show();
+                moviesModel.clear();
+                downloadMovies(UrlConstants.UPCOMING_MOVIES, currentPage);
+                break;
+            case R.id.popular_movies:
+                Toast.makeText(getActivity(), "Popular movies", Toast.LENGTH_SHORT).show();
+                moviesModel.clear();
+                downloadMovies(UrlConstants.POPULAR_MOVIES, currentPage);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -61,18 +62,20 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.movies_fragment:
-                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.main_container, new MoviesFragment()).commit();
-                        //getSupportActionBar().setTitle("Movies");
+                        switchFragment(R.id.main_container, new MoviesFragment());
+
+//                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                        fragmentTransaction.replace(R.id.main_container, new MoviesFragment()).commit();
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         break;
 
                     case R.id.series_fragment:
 
-                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.main_container, new SeriesFragment()).commit();
-                        //getSupportActionBar().setTitle("Series");
+                        switchFragment(R.id.main_container, new SeriesFragment());
+
+//                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                        fragmentTransaction.replace(R.id.main_container, new SeriesFragment()).commit();
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         break;
@@ -90,6 +93,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         actionBarDrawerToggle.syncState();
+    }
+
+    public void switchFragment(int id, Fragment fragment){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(id, fragment).addToBackStack(null).commit();
     }
 
     public void setToolbar(Toolbar toolbar, String title){

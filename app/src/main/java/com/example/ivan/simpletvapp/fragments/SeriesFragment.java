@@ -3,9 +3,6 @@ package com.example.ivan.simpletvapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +25,7 @@ import com.example.ivan.simpletvapp.activities.MainActivity;
 import com.example.ivan.simpletvapp.adapters.SeriesAdapter;
 import com.example.ivan.simpletvapp.models.SeriesModel;
 import com.example.ivan.simpletvapp.other.AppController;
+import com.example.ivan.simpletvapp.other.UrlConstants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,7 +78,8 @@ public class SeriesFragment extends Fragment{
         recyclerView.setLayoutManager(llm);
 
 
-        SeriesFirstDownload(url, currentPage);
+
+        SeriesDownload(url, currentPage);
 
 
 //        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -109,7 +108,7 @@ public class SeriesFragment extends Fragment{
             while(currentPage<totalPages){
                 try {
                     Thread.sleep(1000);
-                    SeriesFirstDownload(url, currentPage);
+                    SeriesDownload(url, currentPage);
                     currentPage++;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -118,7 +117,7 @@ public class SeriesFragment extends Fragment{
         }
     };
 
-    public void SeriesFirstDownload(String url, int currentPage){
+    public void SeriesDownload(String url, int currentPage){
 
         requestStartTime = System.currentTimeMillis();
             String url_final = url + MOVIES_API_KEY + "&page=" + currentPage;
@@ -173,7 +172,25 @@ public class SeriesFragment extends Fragment{
 
         switch (item.getItemId()){
             case R.id.popular_shows:
-                Toast.makeText(getActivity(), "Popular shows", Toast.LENGTH_SHORT).show();break;
+                Toast.makeText(getActivity(), "Popular shows", Toast.LENGTH_SHORT).show();
+                seriesModel.clear();
+                SeriesDownload(UrlConstants.POPULAR_SERIES, currentPage);
+                break;
+            case R.id.on_the_air:
+                Toast.makeText(getActivity(), "On the air shows", Toast.LENGTH_SHORT).show();
+                seriesModel.clear();
+                SeriesDownload(UrlConstants.ON_THE_AIR_SERIES, currentPage);
+                break;
+            case R.id.top_rated_shows:
+                Toast.makeText(getActivity(), "Top rated shows", Toast.LENGTH_SHORT).show();
+                seriesModel.clear();
+                SeriesDownload(UrlConstants.TOP_RATED_SERIES, currentPage);
+                break;
+            case R.id.airing_today:
+                Toast.makeText(getActivity(), "Airing today", Toast.LENGTH_SHORT).show();
+                seriesModel.clear();
+                SeriesDownload(UrlConstants.AIRING_TODAY_SERIES, currentPage);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
