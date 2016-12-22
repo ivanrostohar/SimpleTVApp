@@ -5,16 +5,16 @@
 
         <item
             android:id="@+id/airing_today"
-            android:title="Airing today"/>
+            android:title="Airing today" />
         <item
             android:id="@+id/on_the_air"
-            android:title="On the air"/>
+            android:title="On the air" />
         <item
             android:id="@+id/popular_shows"
-            android:title="Popular Shows"/>
+            android:title="Popular Shows" />
         <item
             android:id="@+id/top_rated_shows"
-            android:title="Top Rated Shows"/>
+            android:title="Top Rated Shows" />
 
     </group>
 

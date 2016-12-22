@@ -27,6 +27,9 @@ android {
 
         }
     }
+    sourceSets {
+        main { assets.srcDirs = ['src/main/assets', 'src/main/assets/', 'src/main/assets/fonts'] }
+    }
 }
 
 dependencies {

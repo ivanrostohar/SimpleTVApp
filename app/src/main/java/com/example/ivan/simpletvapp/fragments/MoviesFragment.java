@@ -1,14 +1,8 @@
 package com.example.ivan.simpletvapp.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -39,8 +33,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import java.util.List;
-
 public class MoviesFragment extends Fragment {
 
     private static final String MOVIES_API_KEY = BuildConfig.MOVIES_API_KEY;
@@ -50,11 +42,26 @@ public class MoviesFragment extends Fragment {
     private LinearLayoutManager llm;
     private int currentPage = 1;
     private int totalPages;
-    private long requestStartTime,requestEndTime, requestTotalTime;
+    private long requestStartTime, requestEndTime, requestTotalTime;
     private MoviesModel moviesObject;
     private ArrayList<MoviesModel> moviesModel = new ArrayList<>();
-    private Toolbar toolbarMovies;
+    public Runnable downloadMoviesThread = new Runnable() {
+        @Override
+        public void run() {
 
+            while (currentPage < totalPages) {
+                try {
+                    Thread.sleep(1000);
+                    downloadMovies(url, currentPage);
+                    currentPage++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    };
+    private Toolbar toolbarMovies;
 
     public MoviesFragment() {
 
@@ -72,16 +79,15 @@ public class MoviesFragment extends Fragment {
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.movies_series_fragment, container, false);
 
-        toolbarMovies = (Toolbar)getActivity().findViewById(R.id.toolbar);
+        toolbarMovies = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
-        ((MainActivity)getActivity()).setToolbar(toolbarMovies, "Movies");
+        ((MainActivity) getActivity()).setToolbar(toolbarMovies, "Movies");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -104,7 +110,6 @@ public class MoviesFragment extends Fragment {
 //                super.onScrolled(recyclerView, dx, dy);
 
 
-
 //                if((recyclerView.getAdapter().getItemCount() == moviesModel.size()-1) && loading){
 //                    new Thread(downloadMoviesThread).start();
 //                    loading = false;
@@ -125,27 +130,7 @@ public class MoviesFragment extends Fragment {
         return view;
     }
 
-
-
-    public Runnable downloadMoviesThread = new Runnable() {
-        @Override
-        public void run() {
-
-            while(currentPage<totalPages){
-                try {
-                    Thread.sleep(1000);
-                    downloadMovies(url, currentPage);
-                    currentPage++;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    };
-
-
-    public void downloadMovies(String url, int currentPage){
+    public void downloadMovies(String url, int currentPage) {
         requestStartTime = System.currentTimeMillis();
         String url_final = url + MOVIES_API_KEY + "&page=" + currentPage;
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url_final, null, new com.android.volley.Response.Listener<JSONObject>() {
@@ -154,7 +139,7 @@ public class MoviesFragment extends Fragment {
                 try {
                     totalPages = response.getInt("total_pages");
                     JSONArray results = response.getJSONArray("results");
-                    for(int i=0; i<results.length(); i++){
+                    for (int i = 0; i < results.length(); i++) {
                         JSONObject resultsObject = results.getJSONObject(i);
                         moviesObject = new MoviesModel(
                                 resultsObject.getString("poster_path"),
@@ -165,7 +150,7 @@ public class MoviesFragment extends Fragment {
                         );
                         Log.v("ID", String.valueOf(moviesObject.getMoviesId()));
                         moviesModel.add(moviesObject);
-                        moviesAdapter = new MoviesAdapter(getActivity(),moviesModel);
+                        moviesAdapter = new MoviesAdapter(getActivity(), moviesModel);
                         recyclerView.setAdapter(moviesAdapter);
                         moviesAdapter.notifyDataSetChanged();
                     }
@@ -183,12 +168,11 @@ public class MoviesFragment extends Fragment {
                 error.getLocalizedMessage();
             }
         });
-        requestTotalTime+=requestEndTime;
+        requestTotalTime += requestEndTime;
 
 
         AppController.getInstance().addToRequestQueue(objectRequest);
     }
-
 
 
     @Override
@@ -201,7 +185,7 @@ public class MoviesFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.top_rated_movies:
                 Toast.makeText(getActivity(), "Top rated movies", Toast.LENGTH_SHORT).show();
                 moviesModel.clear();

@@ -5,16 +5,16 @@
 
         <item
             android:id="@+id/now_playing_movies"
-            android:title="Movies Now Playing"/>
+            android:title="Movies Now Playing" />
         <item
             android:id="@+id/popular_movies"
-            android:title="Popular Movies"/>
+            android:title="Popular Movies" />
         <item
             android:id="@+id/upcoming_movies"
-            android:title="Upcoming Movies"/>
+            android:title="Upcoming Movies" />
         <item
             android:id="@+id/top_rated_movies"
-            android:title="Top Rated Movies"/>
+            android:title="Top Rated Movies" />
 
     </group>
 

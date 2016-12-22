@@ -11,10 +11,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.ivan.simpletvapp.BuildConfig;
 import com.example.ivan.simpletvapp.R;
+import com.example.ivan.simpletvapp.fragments.AboutUsFragment;
 import com.example.ivan.simpletvapp.fragments.MoviesFragment;
 import com.example.ivan.simpletvapp.fragments.SeriesFragment;
 
@@ -33,17 +33,16 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView)findViewById(R.id.navigation_view);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
@@ -51,16 +50,15 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.main_container, new MoviesFragment()).commit();
-      //  getSupportActionBar().setTitle("Movies");
+        //  getSupportActionBar().setTitle("Movies");
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-
 
 
         //tu definiramo fragmente
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.movies_fragment:
                         switchFragment(R.id.main_container, new MoviesFragment());
 
@@ -80,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
 
+                    case R.id.about_us_fragment:
+                        switchFragment(R.id.main_container, new AboutUsFragment());
+                        item.setChecked(true);
+                        drawerLayout.closeDrawers();
+                        break;
+
                 }
 
                 return false;
@@ -95,21 +99,21 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
-    public void switchFragment(int id, Fragment fragment){
+    public void switchFragment(int id, Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(id, fragment).addToBackStack(null).commit();
     }
 
-    public void setToolbar(Toolbar toolbar, String title){
+    public void setToolbar(Toolbar toolbar, String title) {
         AppCompatActivity actionBar = this;
         actionBar.setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout)actionBar.findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) actionBar.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawer.addDrawerListener(toogle);
         toogle.setDrawerIndicatorEnabled(true);
         toogle.syncState();
-        if(toolbar != null)
+        if (toolbar != null)
             toolbar.setTitle(title);
 
     }

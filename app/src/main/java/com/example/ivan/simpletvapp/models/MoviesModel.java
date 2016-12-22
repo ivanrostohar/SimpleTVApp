@@ -8,10 +8,22 @@ import android.os.Parcelable;
  */
 
 public class MoviesModel implements Parcelable {
+    public static final Parcelable.Creator<MoviesModel> CREATOR = new Parcelable.Creator<MoviesModel>() {
+        @Override
+        public MoviesModel createFromParcel(Parcel source) {
+            return new MoviesModel(source);
+        }
+
+        @Override
+        public MoviesModel[] newArray(int size) {
+            return new MoviesModel[size];
+        }
+    };
     private int page, totalResults, totalPages, moviesId, voteCount;
     private String posterPath, overview, releaseDate, originalTitle, originalLanguage, title;
     private double popularity, voteAverage;
     private boolean adoult, video;
+
 
     public MoviesModel(String posterPath, String releaseDate, String originalTitle, double voteAverage, int moviesId) {
         this.posterPath = posterPath;
@@ -21,8 +33,23 @@ public class MoviesModel implements Parcelable {
         this.moviesId = moviesId;
     }
 
-
-
+    protected MoviesModel(Parcel in) {
+        this.page = in.readInt();
+        this.totalResults = in.readInt();
+        this.totalPages = in.readInt();
+        this.moviesId = in.readInt();
+        this.voteCount = in.readInt();
+        this.posterPath = in.readString();
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.originalTitle = in.readString();
+        this.originalLanguage = in.readString();
+        this.title = in.readString();
+        this.popularity = in.readDouble();
+        this.voteAverage = in.readDouble();
+        this.adoult = in.readByte() != 0;
+        this.video = in.readByte() != 0;
+    }
 
     public int getPage() {
         return page;
@@ -167,34 +194,4 @@ public class MoviesModel implements Parcelable {
         dest.writeByte(this.adoult ? (byte) 1 : (byte) 0);
         dest.writeByte(this.video ? (byte) 1 : (byte) 0);
     }
-
-    protected MoviesModel(Parcel in) {
-        this.page = in.readInt();
-        this.totalResults = in.readInt();
-        this.totalPages = in.readInt();
-        this.moviesId = in.readInt();
-        this.voteCount = in.readInt();
-        this.posterPath = in.readString();
-        this.overview = in.readString();
-        this.releaseDate = in.readString();
-        this.originalTitle = in.readString();
-        this.originalLanguage = in.readString();
-        this.title = in.readString();
-        this.popularity = in.readDouble();
-        this.voteAverage = in.readDouble();
-        this.adoult = in.readByte() != 0;
-        this.video = in.readByte() != 0;
-    }
-
-    public static final Parcelable.Creator<MoviesModel> CREATOR = new Parcelable.Creator<MoviesModel>() {
-        @Override
-        public MoviesModel createFromParcel(Parcel source) {
-            return new MoviesModel(source);
-        }
-
-        @Override
-        public MoviesModel[] newArray(int size) {
-            return new MoviesModel[size];
-        }
-    };
 }

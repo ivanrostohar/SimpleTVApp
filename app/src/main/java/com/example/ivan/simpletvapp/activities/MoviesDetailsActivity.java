@@ -2,6 +2,7 @@ package com.example.ivan.simpletvapp.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,11 +35,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MSActivity extends AppCompatActivity {
-
+public class MoviesDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private static final String MOVIES_API_KEY = BuildConfig.MOVIES_API_KEY;
+    MoviesModel moviesObject;
+    MoviesDetails moviesDetails;
+    ArrayList<String> genresName = new ArrayList<>();
+    ArrayList<String> productionCompaniesArray = new ArrayList<>();
     private String url = "https://api.themoviedb.org/3/movie/";
     private String movies_url;
     private Toolbar toolbarDetails;
@@ -46,55 +50,35 @@ public class MSActivity extends AppCompatActivity {
     private TextView txt_title_details, txt_overview_details, txt_budget_details, txt_revenue_details, txt_genres_details, txt_runtime_details, txt_production_companies;
     private ImageView img_movies_details;
     private NestedScrollView nsv;
-    MoviesModel moviesObject;
-    MoviesDetails moviesDetails;
-    ArrayList<String> genresName = new ArrayList<>();
-    ArrayList<String> productionCompaniesArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ms);
+        setContentView(R.layout.activity_movies_details);
         moviesObject = getIntent().getParcelableExtra("movies_object");
 
         downloadMoviesDetails(url, moviesObject.getMoviesId());
 
-        toolbarDetails = (Toolbar)findViewById(R.id.toolbar_details);
-        collapsingToolbarDetails = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
-        txt_title_details = (TextView)findViewById(R.id.txt_title_details);
-        txt_overview_details = (TextView)findViewById(R.id.txt_overview_details);
-        txt_budget_details = (TextView)findViewById(R.id.txt_budget_details);
-        txt_revenue_details = (TextView)findViewById(R.id.txt_revenue_details);
-        txt_genres_details = (TextView)findViewById(R.id.txt_genres_details);
-        txt_runtime_details = (TextView)findViewById(R.id.txt_runtime_details);
-        txt_production_companies = (TextView)findViewById(R.id.txt_production_companies);
-        img_movies_details = (ImageView)findViewById(R.id.img_sm_details);
-        nsv = (NestedScrollView)findViewById(R.id.nested_scroll_view_ms);
+        toolbarDetails = (Toolbar) findViewById(R.id.toolbar_details);
+        collapsingToolbarDetails = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        txt_title_details = (TextView) findViewById(R.id.txt_title_details);
+        txt_overview_details = (TextView) findViewById(R.id.txt_overview_details);
+        txt_budget_details = (TextView) findViewById(R.id.txt_budget_details);
+        txt_revenue_details = (TextView) findViewById(R.id.txt_revenue_details);
+        txt_genres_details = (TextView) findViewById(R.id.txt_genres_details);
+        txt_runtime_details = (TextView) findViewById(R.id.txt_runtime_details);
+        txt_production_companies = (TextView) findViewById(R.id.txt_production_companies);
+        img_movies_details = (ImageView) findViewById(R.id.img_sm_details);
+        nsv = (NestedScrollView) findViewById(R.id.nested_scroll_view_ms);
 
         setSupportActionBar(toolbarDetails);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        img_movies_details.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(movies_url != null) {
-                    Intent i = new Intent();
-                    i.setAction(Intent.ACTION_VIEW);
-                    i.addCategory(Intent.CATEGORY_BROWSABLE);
-                    i.setData(Uri.parse(movies_url));
-                    startActivity(i);
-                }
-                else {
-                    Snackbar.make(findViewById(android.R.id.content), "No url provided", Snackbar.LENGTH_SHORT).show();
-                }
-            }
-        });
-
+        img_movies_details.setOnClickListener(this);
     }
 
-
-    private void downloadMoviesDetails(String url, int id){
+    private void downloadMoviesDetails(String url, int id) {
         String url_final = url + id + "?api_key=" + MOVIES_API_KEY;
         Log.v("URL", url_final);
 
@@ -102,10 +86,10 @@ public class MSActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    for(int i=0;i<response.getJSONArray("genres").length();i++){
+                    for (int i = 0; i < response.getJSONArray("genres").length(); i++) {
                         genresName.add(response.getJSONArray("genres").getJSONObject(i).getString("name"));
                     }
-                    for (int i=0;i<response.getJSONArray("production_companies").length();i++){
+                    for (int i = 0; i < response.getJSONArray("production_companies").length(); i++) {
                         productionCompaniesArray.add(response.getJSONArray("production_companies").getJSONObject(i).getString("name"));
                     }
                     moviesDetails = new MoviesDetails(
@@ -124,20 +108,27 @@ public class MSActivity extends AppCompatActivity {
                             response.getDouble("vote_average"),
                             response.getDouble("vote_count"),
                             response.getInt("runtime")
-                            );
-                    movies_url = moviesDetails.getHomepage();
+                    );
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    movies_url = moviesDetails.getHomepage();
+                    Typeface custom_font = Typeface.createFromAsset(getApplicationContext().getAssets(), "28_Days_Later.ttf");
                     txt_title_details.setText(moviesDetails.getOriginal_title());
+                    txt_title_details.setTypeface(custom_font);
                     txt_overview_details.setText(moviesDetails.getOverview());
-                    txt_budget_details.setText(String.valueOf(moviesDetails.getBudget())+ " $");
+                    txt_budget_details.setText(String.valueOf(moviesDetails.getBudget()) + " $");
                     txt_revenue_details.setText(String.valueOf(moviesDetails.getRevenue()) + " $");
                     txt_runtime_details.setText(String.valueOf(moviesDetails.getRuntime()) + " min");
                     StringBuffer genres = new StringBuffer();
-                    for(int i=0;i<moviesDetails.getGenres().size();i++) {
+                    for (int i = 0; i < moviesDetails.getGenres().size(); i++) {
                         genres.append(moviesDetails.getGenres().get(i) + System.getProperty("line.separator"));
                     }
                     StringBuffer production_comapnies = new StringBuffer();
-                    for(int i=0;i<moviesDetails.getProduction_companies().size();i++){
+                    for (int i = 0; i < moviesDetails.getProduction_companies().size(); i++) {
                         production_comapnies.append(moviesDetails.getProduction_companies().get(i) + System.getProperty("line.separator"));
                     }
                     txt_production_companies.setText(production_comapnies);
@@ -154,14 +145,18 @@ public class MSActivity extends AppCompatActivity {
                                     Palette.Swatch vibrant = palette.getLightVibrantSwatch();
                                     Palette.Swatch vibrantDark = palette.getLightMutedSwatch();
                                     if (vibrant != null) {
-                                        nsv.setBackgroundColor(vibrant.getRgb());
-                                        txt_genres_details.setTextColor(vibrantDark.getTitleTextColor());
-                                        txt_runtime_details.setTextColor(vibrantDark.getTitleTextColor());
-                                        txt_title_details.setTextColor(vibrantDark.getTitleTextColor());
-                                        txt_overview_details.setTextColor(vibrantDark.getTitleTextColor());
-                                        txt_budget_details.setTextColor(vibrantDark.getTitleTextColor());
-                                        txt_revenue_details.setTextColor(vibrantDark.getTitleTextColor());
-                                        txt_production_companies.setTextColor(vibrantDark.getTitleTextColor());
+                                        try {
+                                            nsv.setBackgroundColor(vibrant.getRgb());
+                                            txt_genres_details.setTextColor(vibrantDark.getTitleTextColor());
+                                            txt_runtime_details.setTextColor(vibrantDark.getTitleTextColor());
+                                            txt_title_details.setTextColor(vibrantDark.getTitleTextColor());
+                                            txt_overview_details.setTextColor(vibrantDark.getTitleTextColor());
+                                            txt_budget_details.setTextColor(vibrantDark.getTitleTextColor());
+                                            txt_revenue_details.setTextColor(vibrantDark.getTitleTextColor());
+                                            txt_production_companies.setTextColor(vibrantDark.getTitleTextColor());
+                                        } catch (Exception e) {
+                                            e.getLocalizedMessage();
+                                        }
                                     }
                                 }
                             });
@@ -173,11 +168,10 @@ public class MSActivity extends AppCompatActivity {
                                     .show();
                         }
                     });
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.getLocalizedMessage();
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -191,11 +185,24 @@ public class MSActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (movies_url == null) {
+            Snackbar.make(findViewById(android.R.id.content), "No url provided", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Intent i = new Intent();
+            i.setAction(Intent.ACTION_VIEW);
+            i.addCategory(Intent.CATEGORY_BROWSABLE);
+            i.setData(Uri.parse(movies_url));
+            startActivity(i);
+        }
     }
 }

@@ -3,11 +3,9 @@ package com.example.ivan.simpletvapp.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,21 +16,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ivan.simpletvapp.R;
-import com.example.ivan.simpletvapp.activities.MSActivity;
-import com.example.ivan.simpletvapp.activities.MainActivity;
-import com.example.ivan.simpletvapp.fragments.MoviesSeriesOverview;
+import com.example.ivan.simpletvapp.activities.MoviesDetailsActivity;
 import com.example.ivan.simpletvapp.models.MoviesModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Ivan on 5.12.2016..
  */
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder>{
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
     private Context context;
     private ArrayList<MoviesModel> moviesList;
 
@@ -51,31 +46,36 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
+        Typeface custom_font = Typeface.createFromAsset(context.getAssets(), "28_Days_Later.ttf");
         String poster_path = "https://image.tmdb.org/t/p/w500" + moviesList.get(position).getPosterPath();
 
 
         holder.txt_movie_name.setText(moviesList.get(position).getOriginalTitle().toString());
+        holder.txt_movie_name.setTypeface(custom_font);
         holder.txt_release_date.setText(String.valueOf(moviesList.get(position).getReleaseDate()));
+        holder.txt_release_date.setTypeface(custom_font);
         holder.txt_average.setText(String.valueOf(moviesList.get(position).getVoteAverage()));
-      //  Glide.with(context).load(poster_path).into(holder.img_poster);
+        holder.txt_average.setTypeface(custom_font);
+        //  Glide.with(context).load(poster_path).into(holder.img_poster);
         Picasso.with(context).load(poster_path).into(holder.img_poster, new Callback() {
             @Override
             public void onSuccess() {
                 Bitmap drawable = ((BitmapDrawable) holder.img_poster.getDrawable()).getBitmap();
                 Palette.Builder builder = new Palette.Builder(drawable);
                 builder.generate(new Palette.PaletteAsyncListener() {
-                                     @Override
-                                     public void onGenerated(Palette palette) {
-                                         Palette.Swatch vibrant = palette.getLightVibrantSwatch();
-                                         if (vibrant != null) {
-                                             holder.constraintLayout.setBackgroundColor(vibrant.getRgb());
-                                             holder.txt_movie_name.setTextColor(vibrant.getTitleTextColor());
-                                             holder.txt_release_date.setTextColor(vibrant.getTitleTextColor());
-                                             holder.txt_average.setTextColor(vibrant.getTitleTextColor());
-                                         }
-                                     }
-                                 });
-           }
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        Palette.Swatch vibrant = palette.getLightVibrantSwatch();
+                        if (vibrant != null) {
+                            holder.constraintLayout.setBackgroundColor(vibrant.getRgb());
+                            holder.txt_movie_name.setTextColor(vibrant.getTitleTextColor());
+                            holder.txt_release_date.setTextColor(vibrant.getTitleTextColor());
+                            holder.txt_average.setTextColor(vibrant.getTitleTextColor());
+                        }
+                    }
+                });
+            }
+
             @Override
             public void onError() {
 
@@ -98,50 +98,32 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
         ArrayList<MoviesModel> moviesLista = new ArrayList<>();
         Context context;
-        MoviesSeriesOverview msFragmentDetails;
 
         public ViewHolder(View itemView, Context context, ArrayList<MoviesModel> moviesLista) {
             super(itemView);
             this.moviesLista = moviesLista;
             this.context = context;
             itemView.setOnClickListener(this);
-            txt_movie_name = (TextView)itemView.findViewById(R.id.txt_sm_name);
-            txt_release_date = (TextView)itemView.findViewById(R.id.txt_sm_date);
-            txt_average = (TextView)itemView.findViewById(R.id.txt_sm_average);
-            img_poster = (ImageView)itemView.findViewById(R.id.img_sm_poster);
-            constraintLayout = (ConstraintLayout)itemView.findViewById(R.id.cl_sm);
+            txt_movie_name = (TextView) itemView.findViewById(R.id.txt_sm_name);
+            txt_release_date = (TextView) itemView.findViewById(R.id.txt_sm_date);
+            txt_average = (TextView) itemView.findViewById(R.id.txt_sm_average);
+            img_poster = (ImageView) itemView.findViewById(R.id.img_sm_poster);
+            constraintLayout = (ConstraintLayout) itemView.findViewById(R.id.cl_sm);
         }
 
         @Override
         public void onClick(View view) {
 
-//            MoviesModel moviesObject = this.moviesLista.get(getAdapterPosition());
-//            fragmentJump(moviesObject);
-
             int position = getAdapterPosition();
             MoviesModel moviesObject = this.moviesLista.get(position);
 
-            Intent intent = new Intent(this.context, MSActivity.class);
+            Intent intent = new Intent(this.context, MoviesDetailsActivity.class);
             intent.putExtra("movies_object", moviesObject);
             Log.v("ID", String.valueOf(moviesObject.getMoviesId()));
             this.context.startActivity(intent);
 
         }
 
-//        private void fragmentJump(MoviesModel moviesObject){
-//            msFragmentDetails = new MoviesSeriesOverview();
-//            int position = getAdapterPosition();
-//            Bundle bundle = new Bundle();
-//            bundle.putParcelable("movies_object", moviesObject);
-//            msFragmentDetails.setArguments(bundle);
-//            if(context == null){
-//                return;
-//            }
-//            if(context instanceof MainActivity){
-//                MainActivity mActivity = (MainActivity) context;
-//                mActivity.switchFragment(R.id.main_container, msFragmentDetails);
-//            }
-//        }
     }
 
 }
