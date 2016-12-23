@@ -5,9 +5,12 @@
     <string name="drawer_open">open_drawer</string>
     <string name="drawer_close">close_drawer</string>
 
-    <string name="AboutTheAppTitle">
-        About the app
-    </string>
+    <string name="drawer_movies_title">Movies</string>
+    <string name="drawer_series_title">Series</string>
+    <string name="drawer_separator">Optional</string>
+    <string name="drawer_settings_title">Settings</string>
+    <string name="drawer_about_title">About the app</string>
+
     <string name="AboutTheApp">
         This app is developed mainly for education and learning purposes of android development. It is a simple app that shows information about movies and series.
         It utilizies API calls for data fetching, uses modern design technics like navigation drawer, floating action buttons, Snackbar, recyclerview, custom adapters,
@@ -24,6 +27,25 @@
     <string name="Credits">
         The custom font is made by Film Himmel - Jens R. Ziehn and it is available at http://www.1001freefonts.com/
     </string>
+
+    <string name="overview">Overview:</string>
+    <string name="budget">Budget:</string>
+    <string name="revenue">Revenue:</string>
+    <string name="genres">Genres:</string>
+    <string name="runtime">Runtime:</string>
+    <string name="production_companies">Production Companies:</string>
+    <string name="status">Status:</string>
+    <string name="created_by">Created by:</string>
+    <string name="network">Networks:</string>
+    <string name="nbr_of_episodes">Number of episodes:</string>
+    <string name="nbr_of_seasons">Number of seasons:</string>
+    <string name="first_last_air_date">First / Last air date:</string>
+    <string name="nav_drawer_header_title">Made by The Crow747</string>
+
+    <string-array name="list_languages">
+        <item>English</item>
+        <item>Croatien</item>
+    </string-array>
 
 
 </resources>

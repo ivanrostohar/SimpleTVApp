@@ -3,8 +3,10 @@ package com.example.ivan.simpletvapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +35,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MoviesFragment extends Fragment {
+public class MoviesFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     private static final String MOVIES_API_KEY = BuildConfig.MOVIES_API_KEY;
     private static final String url = "https://api.themoviedb.org/3/movie/top_rated?api_key=";
@@ -95,13 +97,13 @@ public class MoviesFragment extends Fragment {
         llm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(llm);
 
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
-            @Override
-            public void onLoadMore(int current_page) {
-                downloadMovies(url, current_page);
-                Log.v("TIME", String.valueOf(requestTotalTime));
-            }
-        });
+//        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
+//            @Override
+//            public void onLoadMore(int current_page) {
+//                downloadMovies(url, current_page);
+//                Log.v("TIME", String.valueOf(requestTotalTime));
+//            }
+//        });
 
 
 //        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -152,7 +154,7 @@ public class MoviesFragment extends Fragment {
                         moviesModel.add(moviesObject);
                         moviesAdapter = new MoviesAdapter(getActivity(), moviesModel);
                         recyclerView.setAdapter(moviesAdapter);
-                        moviesAdapter.notifyDataSetChanged();
+                       // moviesAdapter.notifyDataSetChanged();
                     }
                     int page2 = response.getInt("page");
                     Log.v("DATA", String.valueOf(page2));
@@ -179,6 +181,10 @@ public class MoviesFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.movies_menu, menu);
+        inflater.inflate(R.menu.search_menu, menu);
+        MenuItem menuIntem = menu.findItem(R.id.search_toolbar);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuIntem);
+        searchView.setOnQueryTextListener(this);
     }
 
 
@@ -212,5 +218,26 @@ public class MoviesFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    //search works fine if there is no recyclerview.onScroolListener
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        newText = newText.toLowerCase();
+        ArrayList<MoviesModel> newList = new ArrayList<>();
+        for(MoviesModel mm : moviesModel){
+            String name = mm.getOriginalTitle().toLowerCase();
+            if(name.contains(newText)){
+                newList.add(mm);
+                Log.v("SEARCH", name);
+            }
+        }
+        moviesAdapter.setFilter(newList);
+        return true;
     }
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SimpleTVApp</string>
+    <string name="AboutTheApp">Ova aplikacija razvijena je s ciljem učenja android programiranja. Aplikacija prikazuje podatke o filmovima i serijama koristeći TheMovieDB API. Podaci se dohvaćaju koristeći Volley library. Uz to, u ovoj aplikaciji je prikazano korištenje recyclerviewa, collapsing toolbar layouta, pallete library, constraint layout, navigacijske ladice... Kao autor ove aplikacije odričem se svake odgovornosti za eventualne krive podatke koje ona prikazuje ili štetu koju kod može napraviti u smislu dohvata podataka ili memory leeka.</string>
+    <string name="Credits">Custom font je napravljen od strane Film Himmel - Jens R. Ziehna te je preuzet s http://www.1001freefonts.com/</string>
+    <string name="CreditsTitle">Zahvale</string>
+    <string name="MOVIEDB">\"Ovaj proizvod koristi TMDb API ali nije odobren niti certificiran od strane TMDb-a\"</string>
+    <string name="budget">Budžet:</string>
+    <string name="created_by">Napravljeno od strane:</string>
+    <string name="drawer_about_title">O aplikaciji</string>
+    <string name="drawer_movies_title">Filmovi</string>
+    <string name="drawer_separator">Dodatno</string>
+    <string name="drawer_series_title">Serije</string>
+    <string name="drawer_settings_title">Opcije</string>
+    <string name="first_last_air_date">Datum premjere / Datum zadnjeg prikaza:</string>
+    <string name="genres">Žanrovi:</string>
+    <string name="nav_drawer_header_title"></string>
+    <string name="nbr_of_episodes">Broj epizoda:</string>
+    <string name="nbr_of_seasons">Broj sezona:</string>
+    <string name="network">TV mreže:</string>
+    <string name="overview">Opis:</string>
+    <string name="production_companies">Produkcijske kompanije:</string>
+    <string name="revenue">Profit:</string>
+    <string name="runtime">Vrijeme trajanja:</string>
+    <string name="status">Status:</string>
+</resources>

@@ -112,4 +112,10 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.ViewHolder
 
         }
     }
+
+    public void setFilter(ArrayList<SeriesModel> newList){
+        seriesModel = new ArrayList<>();
+        seriesModel.addAll(newList);
+        notifyDataSetChanged();
+    }
 }

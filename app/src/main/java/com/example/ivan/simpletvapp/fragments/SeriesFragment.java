@@ -3,8 +3,10 @@ package com.example.ivan.simpletvapp.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +35,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SeriesFragment extends Fragment {
+public class SeriesFragment extends Fragment implements SearchView.OnQueryTextListener {
     private static final String MOVIES_API_KEY = BuildConfig.MOVIES_API_KEY;
     public int currentPage = 1;
     public int totalPages;
@@ -161,6 +163,10 @@ public class SeriesFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.series_menu, menu);
+        inflater.inflate(R.menu.search_menu, menu);
+        MenuItem menuIntem = menu.findItem(R.id.search_toolbar);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuIntem);
+        searchView.setOnQueryTextListener(this);
     }
 
 
@@ -190,6 +196,26 @@ public class SeriesFragment extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        newText = newText.toLowerCase();
+        ArrayList<SeriesModel> newList = new ArrayList<>();
+        for(SeriesModel sm : seriesModel){
+            String name = sm.getName().toLowerCase();
+            if(name.contains(newText)){
+                newList.add(sm);
+                Log.v("SEARCH", name);
+            }
+        }
+        seriesAdapter.setFilter(newList);
+        return true;
     }
 }
 

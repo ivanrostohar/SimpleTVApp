@@ -96,7 +96,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:gravity="start"
-                    android:text="Overview:"
+                    android:text="@string/overview"
                     android:textColor="@android:color/darker_gray"
                     android:textColorLink="@android:color/white"
                     android:textSize="15sp"
@@ -106,10 +106,10 @@
                     android:id="@+id/txt_overview_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|start"
                     android:layout_margin="5dp"
                     android:text="Overview"
-                    android:textColor="@android:color/holo_blue_bright" />
+                    android:textColor="@android:color/holo_blue_bright"
+                    android:gravity="start" />
 
             </LinearLayout>
 
@@ -127,7 +127,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:gravity="start"
-                    android:text="Budget:"
+                    android:text="@string/budget"
                     android:textColor="@android:color/darker_gray"
                     android:textColorLink="@android:color/white"
                     android:textSize="15sp"
@@ -137,10 +137,10 @@
                     android:id="@+id/txt_budget_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|start"
                     android:layout_margin="5dp"
                     android:text="Budget"
-                    android:textColor="@android:color/holo_blue_bright" />
+                    android:textColor="@android:color/holo_blue_bright"
+                    android:gravity="start" />
 
 
             </LinearLayout>
@@ -158,7 +158,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:gravity="start"
-                    android:text="Revenue:"
+                    android:text="@string/revenue"
                     android:textColor="@android:color/darker_gray"
                     android:textColorLink="@android:color/white"
                     android:textSize="15sp"
@@ -168,10 +168,10 @@
                     android:id="@+id/txt_revenue_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|start"
                     android:layout_margin="5dp"
                     android:text="Revenue"
-                    android:textColor="@android:color/holo_blue_bright" />
+                    android:textColor="@android:color/holo_blue_bright"
+                    android:gravity="start" />
 
             </LinearLayout>
 
@@ -189,7 +189,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:gravity="start"
-                    android:text="Genres:"
+                    android:text="@string/genres"
                     android:textColor="@android:color/darker_gray"
                     android:textColorLink="@android:color/white"
                     android:textSize="15sp"
@@ -199,10 +199,10 @@
                     android:id="@+id/txt_genres_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|start"
                     android:layout_margin="5dp"
                     android:text="Genres"
-                    android:textColor="@android:color/holo_blue_bright" />
+                    android:textColor="@android:color/holo_blue_bright"
+                    android:gravity="start" />
             </LinearLayout>
 
 
@@ -219,7 +219,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:gravity="start"
-                    android:text="Runtime:"
+                    android:text="@string/runtime"
                     android:textColor="@android:color/darker_gray"
                     android:textColorLink="@android:color/white"
                     android:textSize="15sp"
@@ -229,10 +229,10 @@
                     android:id="@+id/txt_runtime_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|start"
                     android:layout_margin="5dp"
                     android:text="Runtime"
-                    android:textColor="@android:color/holo_blue_bright" />
+                    android:textColor="@android:color/holo_blue_bright"
+                    android:gravity="start" />
 
             </LinearLayout>
 
@@ -249,7 +249,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:gravity="start"
-                    android:text="Production Companies:"
+                    android:text="@string/production_companies"
                     android:textColor="@android:color/darker_gray"
                     android:textColorLink="@android:color/white"
                     android:textSize="15sp"
@@ -259,10 +259,10 @@
                     android:id="@+id/txt_production_companies"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|start"
                     android:layout_margin="5dp"
                     android:text="Production Companies"
-                    android:textColor="@android:color/holo_blue_bright" />
+                    android:textColor="@android:color/holo_blue_bright"
+                    android:gravity="start" />
 
             </LinearLayout>
 

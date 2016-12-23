@@ -126,4 +126,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
     }
 
+    public void setFilter(ArrayList<MoviesModel> newList){
+        moviesList = new ArrayList<>();
+        moviesList.addAll(newList);
+        notifyDataSetChanged();
+    }
+
 }

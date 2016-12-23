@@ -22,7 +22,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/AboutTheAppTitle"
+                android:text="@string/drawer_about_title"
                 android:textAlignment="viewStart"
                 android:textSize="24sp" />
 

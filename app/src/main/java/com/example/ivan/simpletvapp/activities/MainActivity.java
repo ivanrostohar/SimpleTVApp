@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.ivan.simpletvapp.BuildConfig;
@@ -17,6 +18,7 @@ import com.example.ivan.simpletvapp.R;
 import com.example.ivan.simpletvapp.fragments.AboutUsFragment;
 import com.example.ivan.simpletvapp.fragments.MoviesFragment;
 import com.example.ivan.simpletvapp.fragments.SeriesFragment;
+import com.example.ivan.simpletvapp.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.main_container, new MoviesFragment()).commit();
-        //  getSupportActionBar().setTitle("Movies");
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
 
 
@@ -61,19 +62,18 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.movies_fragment:
                         switchFragment(R.id.main_container, new MoviesFragment());
-
-//                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                        fragmentTransaction.replace(R.id.main_container, new MoviesFragment()).commit();
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         break;
 
                     case R.id.series_fragment:
-
                         switchFragment(R.id.main_container, new SeriesFragment());
+                        item.setChecked(true);
+                        drawerLayout.closeDrawers();
+                        break;
 
-//                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                        fragmentTransaction.replace(R.id.main_container, new SeriesFragment()).commit();
+                    case R.id.settings_fragment:
+                        switchFragment(R.id.main_container, new SettingsFragment());
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         break;
